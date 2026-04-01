@@ -1,0 +1,6 @@
+#THIS FILE IS MEANT TO HIDE THE .env FILE FROM GITHUB BECAUSE THEY SOULD REMAIN PRIVATE
+
+node_modules/
+.env
+db/*.db
+public/uploads/

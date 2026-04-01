@@ -2,7 +2,7 @@
 const bcrypt = require("bcrypt");
 const express = require("express");
 const router = express.Router();
-const isAdmin = require("../middleware/authMiddleware");
+const { isAdmin } = require("../middleware/authMiddleware");
 
 const db = require("../db/database"); // connnection to db
 

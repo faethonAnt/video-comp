@@ -1,11 +1,14 @@
 const express = require("express");
 const session = require("express-session");
 const SQLiteStore = require("connect-sqlite3")(session);
+const passport = require("./passport");
 
 // connect to database
 const db = require("./db/database");
 
+//route requirement
 const adminRoutes = require("./routes/admin");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 const PORT = 3000;
@@ -24,8 +27,12 @@ app.use(
   }),
 );
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 //routes
 app.use("/admin", adminRoutes);
+app.use("/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("Video Competition App is running!");
