@@ -40,6 +40,7 @@ db.serialize(() => {
       userId INTEGER NOT NULL,
       status TEXT DEFAULT 'pending',
       filePath TEXT NOT NULL,
+      youtubeId TEXT,
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (userId) REFERENCES user(id)
     )
