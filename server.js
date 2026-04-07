@@ -18,6 +18,7 @@ const db = require("./db/database");
 const adminRoutes = require("./routes/admin");
 const authRoutes = require("./routes/auth");
 const videoRoutes = require("./routes/videos");
+const voteRoutes = require("./routes/votes");
 
 //create Express app
 const app = express();
@@ -50,6 +51,7 @@ app.use(passport.session()); //
 app.use("/admin", adminRoutes);
 app.use("/auth", authRoutes);
 app.use("/video", videoRoutes);
+app.use("/vote", voteRoutes);
 
 // ?TESTING
 app.get("/", (req, res) => {
