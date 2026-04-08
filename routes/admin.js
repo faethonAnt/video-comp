@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 const router = express.Router();
 const { isAdmin } = require("../middleware/authMiddleware");
+const sendEmail = require("../mailer");
 
 const db = require("../db/database"); // connnection to db
 const { route } = require("./votes");
@@ -66,31 +67,48 @@ router.put("/video/:id/approve", isAdmin, (req, res) => {
             const userId = video.userId; //get the user id back from the video upload
 
             db.get(
-              //CHECK IF USER HAS ENTRY
+              /*  EDGE CASE we are checking only in the case admin approves,rejects and then approves again to not have multiple votes in any other case the the video would get blocked by the upload check*/
               "SELECT * FROM lottery WHERE userId = ? AND type = ?",
               [userId, "upload"],
               (err, userLottery) => {
                 if (err)
                   return res.status(500).json({ message: "Server Error" });
-                if (userLottery)
-                  res
-                    .status(200)
-                    .json({ message: "Success upload but user has entry" });
-                else {
-                  db.run(
-                    "INSERT INTO lottery (userId, type) VALUES (?,?)",
-                    [userId, "upload"],
-                    (err) => {
-                      if (err)
-                        return res
-                          .status(500)
-                          .json({ message: "Server Error" });
-                      else {
-                        res.status(200).json({ message: "Entered lottery" });
-                      }
-                    },
-                  );
-                }
+
+                //* MESSAGING SYSTEM
+                db.get(
+                  "SELECT * FROM user WHERE id = ? ",
+                  [userId],
+                  (err, user) => {
+                    if (err)
+                      return res.status(500).json({ message: "Server Error" });
+                    sendEmail(
+                      user.email,
+                      "Video Acceptance",
+                      "We are happy to inform you that the video you uploaded on Video - comp site is approved!",
+                    );
+                    if (userLottery)
+                      res
+                        .status(200)
+                        .json({ message: "Success upload but user has entry" });
+                    else {
+                      db.run(
+                        "INSERT INTO lottery (userId, type) VALUES (?,?)",
+                        [userId, "upload"],
+                        (err) => {
+                          if (err)
+                            return res
+                              .status(500)
+                              .json({ message: "Server Error" });
+                          else {
+                            res
+                              .status(200)
+                              .json({ message: "Entered lottery" });
+                          }
+                        },
+                      );
+                    }
+                  },
+                );
               },
             );
           }
@@ -100,14 +118,39 @@ router.put("/video/:id/approve", isAdmin, (req, res) => {
   );
 });
 
-router.put("/videos/:id/reject", isAdmin, (req, res) => {
-  const id = req.params.id;
+router.put("/video/:id/reject", isAdmin, (req, res) => {
+  const videoId = req.params.id;
   db.run(
     "UPDATE video SET status = ? WHERE id = ?",
-    ["rejected", id],
+    ["rejected", videoId],
     (err) => {
       if (err) return res.status(500).json({ message: "Something went wrong" });
-      res.status(200).json({ message: "Video rejected" });
+      else {
+        db.get("SELECT * FROM video where id = ? ", [videoId], (err, video) => {
+          //FIND VIDEO
+          if (err) return res.status(500).json({ message: "Server Error" });
+          else {
+            const userId = video.userId;
+
+            //* MESSAGING SYSTEM
+            db.get(
+              "SELECT * FROM user WHERE id = ? ",
+              [userId],
+              (err, user) => {
+                if (err)
+                  return res.status(500).json({ message: "Server Error" });
+
+                sendEmail(
+                  user.email,
+                  "Video Rejection",
+                  "We are in the unfortunate position to inform you that the video you uploaded on Video - comp site is rejected!",
+                );
+                res.status(200).json({ message: "Video rejected" });
+              },
+            );
+          }
+        });
+      }
     },
   );
 });
@@ -129,6 +172,7 @@ router.post("/lottery/draw", isAdmin, (req, res) => {
             if (err) return res.status(500).json({ message: "Server Error" });
 
             const userNameVote = user.name;
+            const userEmailVote = user.email;
 
             db.get(
               "SELECT * FROM lottery WHERE type = ? ORDER BY RANDOM () LIMIT 1",
@@ -150,6 +194,19 @@ router.post("/lottery/draw", isAdmin, (req, res) => {
                           .json({ message: "Server Error" });
 
                       const userNameUpload = user.name;
+                      const userEmailUpload = user.email;
+
+                      sendEmail(
+                        userEmailVote,
+                        "Vote Lottery Results",
+                        "We are happy to inform you that you have won the the lottery of the Video - Comp for voting for the best videos!",
+                      );
+
+                      sendEmail(
+                        userEmailUpload,
+                        "Upload Lottery Results",
+                        "We are happy to inform you that you have won the the lottery of the Video - Comp for uploading the best video!",
+                      );
 
                       res.status(200).json({
                         message:
