@@ -6,7 +6,6 @@ const { isAdmin } = require("../middleware/authMiddleware");
 const sendEmail = require("../mailer");
 
 const db = require("../db/database"); // connnection to db
-const { route } = require("./votes");
 
 //Define routes
 //  /admin/login
@@ -49,21 +48,6 @@ router.get("/video", isAdmin, (req, res) => {
     res.status(200).json({ videos }); //sending the array back as JSON the front end will handle it later
   });
 });
-
-async function video() {
-  try {
-    const response = await fetch("http://localhost:3000/admin/video", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    const data = await response.json();
-    console.log(data);
-  } catch (err) {
-    console.log("Something went wrong", err);
-  }
-}
-video();
 
 router.put("/video/:id/approve", isAdmin, (req, res) => {
   //:id extracts the video id from the URL
