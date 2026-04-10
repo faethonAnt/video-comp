@@ -47,6 +47,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session()); //
 
+app.use(express.static("public"));
+
 //routes will be prefixed with the appropriate path
 app.use("/admin", adminRoutes);
 app.use("/auth", authRoutes);

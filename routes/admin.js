@@ -50,6 +50,21 @@ router.get("/video", isAdmin, (req, res) => {
   });
 });
 
+async function video() {
+  try {
+    const response = await fetch("http://localhost:3000/admin/video", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await response.json();
+    console.log(data);
+  } catch (err) {
+    console.log("Something went wrong", err);
+  }
+}
+video();
+
 router.put("/video/:id/approve", isAdmin, (req, res) => {
   //:id extracts the video id from the URL
   const videoId = req.params.id;

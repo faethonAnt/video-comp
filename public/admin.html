@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+
+
+    <div id="login-form">
+        <form method="POST">
+            <label for="username">
+                <input type="text" placeholder="Username" name="username" id="username" required>
+            </label>
+
+            <label for="password" >
+                <input type="password" placeholder="Password" name="password" id="password" required>
+            </label>
+
+            <button type="button" id="login-btn">Submit</button>
+        </form>
+    </div>
+
+    <div id="pending-list">
+        <h2>Pending Videos</h2>
+    </div>
+
+
+    <div id="lottery-draw">
+        <button>Draw winners</button>   
+    </div>
+
+
+    <script src="admin.js"></script>
+</body>
+</html>
