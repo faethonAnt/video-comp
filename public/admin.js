@@ -31,6 +31,7 @@ async function loadVideos() {
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
+    document.getElementById("pending-list").innerHTML = "";
     data.videos.forEach((video) => {
       document.getElementById("pending-list").innerHTML += `
     <div>
@@ -45,45 +46,61 @@ async function loadVideos() {
   }
 }
 
-async function approveVideo(id, data) {
+async function approveVideo(id) {
   try {
     const response = await fetch(
       `http://localhost:3000/admin/video/${id}/approve`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
       },
     );
     if (response.ok) {
       const res = await response.json();
       console.log("Success");
+      loadVideos();
       return res;
-    } else return res.status(500).json({ message: "somwthing weent wrong" });
+    } else return console.log("Something went wrong");
   } catch (err) {
     console.error(err);
   }
 }
 
-async function rejectVideo(id, data) {
+async function rejectVideo(id) {
   try {
     const response = await fetch(
       `http://localhost:3000/admin/video/${id}/reject`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
       },
     );
     if (response.ok) {
       const res = await response.json();
       console.log("Success");
-
+      loadVideos();
       return res;
-    } else return res.status(500).json({ message: "somwthing weent wrong" });
+    } else return console.log("Something went wrong");
   } catch (err) {
     console.error(err);
   }
 }
 
+async function drawLottery() {
+  try {
+    const response = await fetch(`http://localhost:3000/admin/lottery/draw`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (response.ok) {
+      const res = await response.json();
+      alert(res.message);
+      return res;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
 document.getElementById("login-btn").addEventListener("click", login);
+
+document.getElementById("lottery-draw").addEventListener("click", drawLottery);

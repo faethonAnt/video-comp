@@ -26,7 +26,7 @@ const upload = multer({ storage });
 
 router.post("/upload", isUser, upload.single("video"), (req, res) => {
   const title = req.body.title;
-  //const userId = 1; //!this is used for testing purposes only
+  //const userId = 3; //!this is used for testing purposes only
   const userId = req.user.id;
   const filePath = req.file.path;
 
