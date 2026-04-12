@@ -13,7 +13,7 @@ router.get(
   passport.authenticate("facebook", { failureRedirect: "/" }),
   (req, res) => {
     //A route handler ALWAYS receives req and res
-    res.status(200).json({ message: "success" });
+    res.redirect("/index.html"); // to return back to the home page
   },
 );
 

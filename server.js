@@ -60,6 +60,12 @@ app.get("/", (req, res) => {
   res.send("Video Competition App is running!");
 });
 
+//used to remove the facebook login button from the home page after login
+app.get("/me", (req, res) => {
+  if (req.user) res.json({ user: req.user });
+  else res.json({ user: null });
+});
+
 // * START SRV LISTENING FOR REQ ON PORT 3000
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

@@ -6,8 +6,9 @@ const router = express.Router();
 //!router.post("/:id", (req, res) => { TESTING
 router.post("/:id", isUser, (req, res) => {
   const videoId = req.params.id;
-
   const userId = req.user.id;
+  console.log("User:", req.user);
+  console.log("Video ID:", req.params.id);
   //!const userId = 1; TESTING
 
   db.get(
@@ -22,14 +23,15 @@ router.post("/:id", isUser, (req, res) => {
           "INSERT INTO vote (userId, videoId) VALUES (?,?)",
           [userId, videoId],
           (err) => {
-            if (err) return res.status(500).json({ message: "Server Error" });
+            console.log("DB Error:", err.message);
+            if (err) return res.status(500).json({ message: "Server Error 1" });
             else {
               db.get(
                 "SELECT * FROM lottery WHERE userId = ? AND type = ?",
                 [userId, "vote"],
                 (err, userLottery) => {
                   if (err)
-                    return res.status(500).json({ message: "Server Error" });
+                    return res.status(500).json({ message: "Server Error 2" });
                   if (userLottery)
                     res
                       .status(200)
@@ -42,7 +44,7 @@ router.post("/:id", isUser, (req, res) => {
                         if (err)
                           return res
                             .status(500)
-                            .json({ message: "Server Error" });
+                            .json({ message: "Server Error 3" });
                         else {
                           res.status(200).json({ message: "Entered lottery" });
                         }
