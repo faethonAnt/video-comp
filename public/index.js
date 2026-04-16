@@ -28,14 +28,16 @@ async function loadVideos() {
     const data = await response.json();
     document.getElementById("videos-list").innerHTML = "";
     data.videos.forEach((video) => {
-      video.filepath = video.filePath.replace("public/", "/");
+      let thumbnail = video.filePath.replace("public/", "/");
       //TODO add username for the uploader
       document.getElementById("videos-list").innerHTML += `
-    <div>
-        <p>${video.title}</p>
-        <p>${video.createdAt}</p>
-        <video src="${video.filepath}"></video>
-        <button id="vote-btn" onclick="voteVideo(${video.id})">Vote</button>
+    <div class="card">
+        <video src="${thumbnail}"></video>
+        <div class="card-body">
+          <h3>${video.title}</h3>
+          <p>${video.createdAt}</p>
+          <button class="vote-btn" onclick="voteVideo(${video.id})">Vote</button>
+        </div>
     </div>
 `;
     });
