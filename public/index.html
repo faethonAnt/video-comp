@@ -7,18 +7,28 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-    <header>
-        <h1>Video Comp</h1>
-
-
-        <button id="facebook-login-btn">Facebook Login</button>
-    </header>
+   
     <body>
-        <h2 id="video-head">Videos</h2>
+        <header>
+            <h1>Video Comp</h1>
+
+            <div id="header-actions">
+                <button id="facebook-login-btn">Facebook Login</button>
+                <button id="upload-btn">Upload Video</button>
+            </div>
+            
+        </header>
+
+        <nav id="video-filtering">
+            <!--data-filter can be accessed with button.dataset.filter from js -->
+            <button class="tab" data-filter="all">All Videos</button>
+            <button class="tab" data-filter="week">Weekly Top 5</button>
+            <button class="tab" data-filter="alltime">Top 10</button>
+        </nav>
 
         <div id="videos-list">
         </div>
-        
+
         <script src="index.js"></script>
     </body>
 

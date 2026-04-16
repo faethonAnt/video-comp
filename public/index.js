@@ -28,9 +28,13 @@ async function loadVideos() {
     const data = await response.json();
     document.getElementById("videos-list").innerHTML = "";
     data.videos.forEach((video) => {
+      video.filepath = video.filePath.replace("public/", "/");
+      //TODO add username for the uploader
       document.getElementById("videos-list").innerHTML += `
     <div>
         <p>${video.title}</p>
+        <p>${video.createdAt}</p>
+        <video src="${video.filepath}"></video>
         <button id="vote-btn" onclick="voteVideo(${video.id})">Vote</button>
     </div>
 `;
