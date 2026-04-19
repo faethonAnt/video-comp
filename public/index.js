@@ -36,7 +36,7 @@ async function loadVideos() {
         <div class="card-body">
           <h3>${video.title}</h3>
           <p>${video.createdAt}</p>
-          <button class="vote-btn" onclick="voteVideo(${video.id})">Vote</button>
+          <button class="vote-btn" onclick="voteVideo(${video.id})">👍 Vote</button>
         </div>
     </div>
 `;
@@ -61,9 +61,43 @@ async function voteVideo(id) {
   }
 }
 
+function openUploadModal() {
+  document.getElementById("upload-modal").style.display = "flex";
+}
+
+function closeUploadModal() {
+  document.getElementById("upload-modal").style.display = "none";
+}
+
+document.getElementById("upload-form").addEventListener("submit", async (e) => {
+  e.preventDefault(); // no page reload
+
+  const formData = new FormData(e.target);
+
+  const response = await fetch("/video/upload", {
+    method: "POST",
+    body: formData,
+  });
+  const data = await response.json();
+
+  if (response.ok) {
+    closeUploadModal();
+  } else {
+    alert(data.message);
+  }
+});
+
 loadVideos();
 checkAuth();
 
 document
   .getElementById("facebook-login-btn")
   .addEventListener("click", facebookLogin);
+
+document
+  .getElementById("upload-btn")
+  .addEventListener("click", openUploadModal);
+
+document
+  .getElementById("cancel-btn")
+  .addEventListener("click", closeUploadModal);

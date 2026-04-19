@@ -13,11 +13,32 @@
             <h1>Video Comp</h1>
 
             <div id="header-actions">
+                
                 <button id="facebook-login-btn">Facebook Login</button>
                 <button id="upload-btn">Upload Video</button>
+                
             </div>
             
         </header>
+
+        <div id="upload-modal" style="display: none;">
+                    <div id="modal-content">
+                        <h2>Upload Your Video</h2>
+                        <form id="upload-form" >
+                            <p>Share your video entry for the competition. Fill in the details below.</p>
+                            <label for="video-title">Video Title</label>
+                            <input name="title" type="text" id="video-title" placeholder="Enter the title of the video">
+
+                            <label for="video">Select a video to upload (max:20sec)</label>
+                            <input type="file" name="video" id="video-file">
+                            
+                            <button id="cancel-btn" type="button">Cancel</button>
+                            
+                            <button id="modal-upload-btn">Upload Video</button>
+                        </form>
+                    </div>
+                </div>
+                
 
         <nav id="video-filtering">
             <!--data-filter can be accessed with button.dataset.filter from js -->
