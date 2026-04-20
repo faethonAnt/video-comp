@@ -24,6 +24,28 @@ async function login() {
   }
 }
 
+// async function loadVideos() {
+//   try {
+//     const response = await fetch("http://localhost:3000/admin/video", {
+//       method: "GET",
+//       headers: { "Content-Type": "application/json" },
+//     });
+//     const data = await response.json();
+//     document.getElementById("pending-list").innerHTML = "";
+//     data.videos.forEach((video) => {
+//       document.getElementById("pending-list").innerHTML += `
+//     <div>
+//         <p>${video.title}</p>
+//         <button onclick="approveVideo(${video.id})">Approve</button>
+//         <button onclick="rejectVideo(${video.id})">Reject</button>
+//     </div>
+// `;
+//     });
+//   } catch (err) {
+//     console.log("Something went wrong", err);
+//   }
+// }
+
 async function loadVideos() {
   try {
     const response = await fetch("http://localhost:3000/admin/video", {
@@ -31,19 +53,25 @@ async function loadVideos() {
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
-    document.getElementById("pending-list").innerHTML = "";
-    data.videos.forEach((video) => {
-      document.getElementById("pending-list").innerHTML += `
-    <div>
-        <p>${video.title}</p>
-        <button onclick="approveVideo(${video.id})">Approve</button>
-        <button onclick="rejectVideo(${video.id})">Reject</button>
-    </div>
-`;
-    });
+    allVideos = data.videos;
+    renderVideos(allVideos);
   } catch (err) {
     console.log("Something went wrong", err);
   }
+}
+
+function renderVideos(allVideos) {
+  allVideos.forEach((video) => {
+    let thumbnail = video.filePath.replace("public/", "/");
+    document.getElementById("pending-list").innerHTML += `
+      <div>
+          <video src="${thumbnail}"></video>
+          <p>${video.title}</p>
+          <button onclick="approveVideo(${video.id})">Approve</button>
+          <button onclick="rejectVideo(${video.id})">Reject</button>
+      </div>
+      `;
+  });
 }
 
 async function approveVideo(id) {
@@ -104,3 +132,8 @@ async function drawLottery() {
 document.getElementById("login-btn").addEventListener("click", login);
 
 document.getElementById("lottery-draw").addEventListener("click", drawLottery);
+
+document.getElementById("logout-btn").addEventListener("click", async () => {
+  await fetch("/admin/logout");
+  window.location.href = "/admin-panel/";
+});

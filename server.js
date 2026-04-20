@@ -48,6 +48,7 @@ app.use(passport.initialize());
 app.use(passport.session()); //
 
 app.use(express.static("public"));
+app.use("/admin-panel", express.static("public/admin"));
 
 //routes will be prefixed with the appropriate path
 app.use("/admin", adminRoutes);
