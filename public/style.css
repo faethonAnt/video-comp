@@ -100,3 +100,8 @@ video{
     height:180px;
     object-fit:cover;
 }
+
+.tab.active{
+    border-color: black;
+    font-weight: bold;
+}

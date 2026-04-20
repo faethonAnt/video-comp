@@ -1,3 +1,6 @@
+//list of videos
+let allVideos = [];
+
 async function checkAuth() {
   try {
     const response = await fetch("http://localhost:3000/me", {
@@ -26,11 +29,19 @@ async function loadVideos() {
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
-    document.getElementById("videos-list").innerHTML = "";
-    data.videos.forEach((video) => {
-      let thumbnail = video.filePath.replace("public/", "/");
-      //TODO add username for the uploader
-      document.getElementById("videos-list").innerHTML += `
+    allVideos = data.videos;
+    renderVideos(allVideos);
+  } catch (err) {
+    console.log("Something went wrong", err);
+  }
+}
+
+function renderVideos(allVideos) {
+  document.getElementById("videos-list").innerHTML = "";
+  allVideos.forEach((video) => {
+    let thumbnail = video.filePath.replace("public/", "/");
+    //TODO add username for the uploader
+    document.getElementById("videos-list").innerHTML += `
     <div class="card">
         <video src="${thumbnail}"></video>
         <div class="card-body">
@@ -40,10 +51,7 @@ async function loadVideos() {
         </div>
     </div>
 `;
-    });
-  } catch (err) {
-    console.log("Something went wrong", err);
-  }
+  });
 }
 
 async function voteVideo(id) {
@@ -101,3 +109,25 @@ document
 document
   .getElementById("cancel-btn")
   .addEventListener("click", closeUploadModal);
+
+// LIST FILTERING
+document.querySelectorAll(".tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document
+      .querySelectorAll(".tab")
+      .forEach((t) => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    //using the data-filter attribute
+    const filter = tab.dataset.filter;
+    if (filter === "all") {
+      renderVideos(allVideos);
+    } else if (filter === "week") {
+      const top5 = allVideos.slice(0, 5);
+      renderVideos(top5);
+    } else if (filter === "alltime") {
+      const top10 = allVideos.slice(0, 10);
+      renderVideos(top10);
+    }
+  });
+});
